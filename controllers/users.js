@@ -1,6 +1,8 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const ClothingItem = require("../models/clothingItem");
+const { defaultClothingItems } = require("../utils/defaultClothingItems");
 const { JWT_SECRET } = require("../utils/config");
 
 const {
@@ -44,9 +46,27 @@ const createUser = (req, res, next) => {
         .then((hash) =>
           User.create({ name, avatar, email, password: hash })
             .then((user) => {
-              const userWithoutPassword = user.toObject();
-              delete userWithoutPassword.password;
-              return res.send({ data: userWithoutPassword });
+              // Prepare default clothing items for the new user
+              const itemsToInsert = defaultClothingItems.map((item) => ({
+                name: item.name,
+                weather: (item.weather || "").toLowerCase(),
+                imageUrl: item.imageUrl || item.link || "",
+                owner: user._id,
+              }));
+
+              // Insert default items and respond only after successful insertion.
+              // If insertion fails, rollback the created user to avoid partial state.
+              return ClothingItem.insertMany(itemsToInsert)
+                .then(() => {
+                  const userWithoutPassword = user.toObject();
+                  delete userWithoutPassword.password;
+                  return res.send({ data: userWithoutPassword });
+                })
+                .catch((insertErr) =>
+                  User.findByIdAndDelete(user._id).then(() =>
+                    Promise.reject(insertErr)
+                  )
+                );
             })
             .catch((err) => {
               if (err.name === "ValidationError") {
