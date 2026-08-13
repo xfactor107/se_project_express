@@ -1,61 +1,54 @@
-# WTWR: Weather-Based Wardrobe Recommender — Frontend
+# WTWR: Weather-Based Wardrobe Recommender — Backend
 
-A responsive React application that recommends outfits based on real-time weather conditions and user preferences.
+A Node.js/Express REST API that powers the WTWR application with user authentication, wardrobe management, weather-based filtering, and automatic default item population.
 
 ## Demo
 Watch the full walkthrough here:  
 https://drive.google.com/file/d/1t3nKE09WM2USEuP8KLYoDGpm5oVzsi8M/view?usp=sharing
 
 ## Overview
-WTWR (“What To Wear?”) is a full-stack MERN application that helps users decide what to wear based on the current weather in their location.  
-The frontend provides a clean, intuitive interface for browsing recommended outfits, managing wardrobe items, and interacting with user-specific content.
+This backend provides all server-side functionality for WTWR, including:
 
-This frontend is deployed on Vercel and communicates with a Node/Express backend hosted on Render.
+- User authentication  
+- Clothing item CRUD operations  
+- Weather-based filtering logic  
+- Automatic default wardrobe population on signup  
+- Secure environment variable handling  
+- MongoDB data persistence  
+- Production deployment on Render  
 
 ## Features
-- Real-time weather display using a third-party weather API  
-- Personalized outfit recommendations based on temperature  
-- User authentication (signup/login)  
-- Full wardrobe management  
-  - Add clothing items  
-  - Delete clothing items  
-  - Like/unlike items  
-- Responsive UI built with React  
-- Automatic default wardrobe population for new users  
-- Clean, modern component architecture
+- RESTful API built with Express  
+- MongoDB database with Mongoose models  
+- JWT authentication  
+- Default clothing item insertion for new users  
+- Weather-based filtering  
+- Robust error handling  
+- CORS configuration  
+- Environment variable support via `.env`
 
 ## Tech Stack
-- React  
-- JavaScript  
-- CSS  
-- Fetch API  
-- Vercel Deployment  
-- OpenWeather API  
+- Node.js  
+- Express.js  
+- MongoDB + Mongoose  
+- dotenv  
+- Render Deployment  
 - JWT Authentication
 
 ## Live Deployment
-Frontend (Vercel):  
-https://se-project-react-blue.vercel.app/
-
 Backend (Render):  
 https://se-project-express-vfq4.onrender.com
 
+Frontend (Vercel):  
+https://se-project-react-blue.vercel.app/
+
 ## Project Structure
-src/
-
-components/
-
-contexts/
-
-hooks/
-
+controllers/
+models/
+routes/
+middlewares/
 utils/
-
-images/
-
-App.js
-
-index.js
+app.js
 
 
 ## Installation & Setup
@@ -64,14 +57,26 @@ index.js
 npm install
 
 3. Create a `.env` file  
-REACT_APP_API_URL=https://se-project-express-vfq4.onrender.com
+PORT=3001
+MONGO_URL=<your MongoDB connection string>
+JWT_SECRET=<your secret>
 
-4. Start the development server  
-npm start
+4. Start the server  
+npm run start
 
 
-## Backend Repository
-https://github.com/ajjime11/se_project_express
+## API Endpoints
+
+### Auth
+- POST /signup — Create user + insert default items  
+- POST /signin — Login and receive JWT  
+
+### Clothing Items
+- GET /items — Get all items  
+- POST /items — Add item  
+- DELETE /items/:id — Delete item  
+- PUT /items/:id/likes — Like item  
+- DELETE /items/:id/likes — Unlike item  
 
 ## Author
 Developed by **Alejandro Jimenez**
