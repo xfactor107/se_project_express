@@ -1,41 +1,39 @@
-# SE_Project_Express
+WTWR — Backend (Express API)
+This is the Express.js backend for the WTWR application. It provides RESTful API endpoints for user authentication, clothing item management, and weather‑based outfit recommendations. The service is designed to be lightweight, modular, and easy to extend.
 
-### Deployed project's domain name: [Live Demo - Relocating/Under Maintenance]
+⚠️ Important Note About Load Time
+This API is deployed on a free hosting tier that sleeps when inactive.
+The first request may take a few seconds to wake the server.  
+Once awake, responses are fast and consistent.
 
-### Link to frontend repo: https://github.com/ajjime11/se_project_react
+🛠️ Tech Stack
+Node.js
+Express.js
+MongoDB
+RESTful API architecture
+JWT authentication
+Hosted on free-tier cloud service
 
-### Link to project pitch video: https://drive.google.com/file/d/1t3nKE09WM2USEuP8KLYoDGpm5oVzsi8M/view?usp=sharing 
+📦 Features
+User registration and login
+Secure JWT-based authentication
+CRUD operations for clothing items
+Weather‑driven outfit recommendation endpoints
+Input validation and error handling
+Modular routing and controller structure
 
-### Project Description
+📁 Project Structure
+Code
+/controllers
+/routes
+/models
+/middlewares
+/utils
 
-This is the backend segment of the WTWR (What to Wear) project, a web application that helps users find the right clothes based on the weather. This repository contains the server-side code, including a robust API and user authorization features.
-
-The purpose of this project is to provide a comprehensive backend solution for the WTWR application. The project focuses on:
-
-- Building a server with a RESTful API
-- Implementing user authentication and authorization
-- Integrating with a database (likely MongoDB, given the typical stack)
-- Ensuring security and testing
-
-This project is not a full-stack application and therefore cannot be published to GitHub Pages. It is designed to be paired with a separate front-end repository.
-
-### Project Structure
-
-- `app.js`: The main server file.
-- `routes/`: Contains all the API routes.
-- `controllers/`: Handles the business logic for each route.
-- `models/`: Defines the data schemas.
-- `middlewares/`: Middleware functions for authentication and error handling.
-- `utils/`: Utility functions.
-
-### API Endpoints
-
-- `POST /users/signup`: Register a new user
-- `POST /users/signin`: Log in a user
-- `GET /items`: Get a list of all items)
-
-### Technologies Used
-
-- Node.js
-- Express
-- MongoDB
+🔧 Development
+Install dependencies:
+Code
+npm install
+Run locally:
+Code
+npm run start
