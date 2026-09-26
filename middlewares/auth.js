@@ -1,13 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
-
-class UnauthorizedError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "UnauthorizedError";
-    this.statusCode = 401;
-  }
-}
+const { UnauthorizedError } = require("../utils/customErrors");
 
 const auth = (req, res, next) => {
   const { authorization } = req.headers;

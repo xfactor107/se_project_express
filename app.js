@@ -10,11 +10,8 @@ const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
 const { PORT = 3001 } = process.env;
-
-// At the top of your file with your other constants
 const { MONGODB_URI = "mongodb://127.0.0.1:27017/wtwr_db" } = process.env;
 
-// Update your connection line
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
@@ -32,12 +29,6 @@ const users = require("./routes/users");
 const clothingItems = require("./routes/clothingItems");
 
 const { validateUserBody, validateLogin } = require("./middlewares/validation");
-
-app.get("/crash-test", () => {
-  setTimeout(() => {
-    throw new Error("Server will crash now");
-  }, 0);
-});
 
 app.post("/signup", validateUserBody, createUser);
 app.post("/signin", validateLogin, login);

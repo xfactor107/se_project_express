@@ -12,78 +12,46 @@ const {
   ConflictError,
 } = require("../utils/customErrors");
 
-const getUsers = (req, res, next) => {
-  User.find({})
-    .then((users) => res.send({ data: users }))
-    .catch(next);
-};
-
-const getUser = (req, res, next) => {
-  const { userId } = req.params;
-  User.findById(userId)
-    .orFail()
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.name === "CastError") {
-        return next(new BadRequestError("Invalid user ID"));
-      }
-      if (err.name === "DocumentNotFoundError") {
-        return next(new NotFoundError("User not found"));
-      }
-      return next(err);
-    });
-};
-
-const createUser = (req, res, next) => {
+const createUser = async (req, res, next) => {
   const { name, avatar, email, password } = req.body;
-  User.findOne({ email })
-    .then((existingUser) => {
-      if (existingUser) {
-        return next(new ConflictError("This email is already registered."));
-      }
-      return bcrypt
-        .hash(password, 10)
-        .then((hash) =>
-          User.create({ name, avatar, email, password: hash })
-            .then((user) => {
-              // Prepare default clothing items for the new user
-              const itemsToInsert = defaultClothingItems.map((item) => ({
-                name: item.name,
-                weather: (item.weather || "").toLowerCase(),
-                imageUrl: item.imageUrl || item.link || "",
-                owner: user._id,
-              }));
 
-              // Insert default items and respond only after successful insertion.
-              // If insertion fails, rollback the created user to avoid partial state.
-              return ClothingItem.insertMany(itemsToInsert)
-                .then(() => {
-                  const userWithoutPassword = user.toObject();
-                  delete userWithoutPassword.password;
-                  return res.send({ data: userWithoutPassword });
-                })
-                .catch((insertErr) =>
-                  User.findByIdAndDelete(user._id).then(() =>
-                    Promise.reject(insertErr)
-                  )
-                );
-            })
-            .catch((err) => {
-              if (err.name === "ValidationError") {
-                return next(new BadRequestError(err.message));
-              }
-              if (err.code === 11000) {
-                return next(
-                  new ConflictError("This email is already registered.")
-                );
-              }
-              return next(err);
-            })
-        )
-        .catch(next);
-    })
-    .catch(next);
+  try {
+    if (await User.exists({ email })) {
+      return next(new ConflictError("This email is already registered."));
+    }
+
+    const hash = await bcrypt.hash(password, 10);
+    const user = await User.create({ name, avatar, email, password: hash });
+
+    // Give the new user a starter wardrobe. If that fails, remove the user so
+    // a retry with the same email doesn't hit a duplicate-key error.
+    const itemsToInsert = defaultClothingItems.map((item) => ({
+      name: item.name,
+      weather: item.weather.toLowerCase(),
+      imageUrl: item.imageUrl,
+      owner: user._id,
+    }));
+    try {
+      await ClothingItem.insertMany(itemsToInsert);
+    } catch (insertErr) {
+      await User.findByIdAndDelete(user._id);
+      throw insertErr;
+    }
+
+    const userWithoutPassword = user.toObject();
+    delete userWithoutPassword.password;
+    return res.status(201).send({ data: userWithoutPassword });
+  } catch (err) {
+    if (err.name === "ValidationError") {
+      return next(new BadRequestError(err.message));
+    }
+    if (err.code === 11000) {
+      return next(new ConflictError("This email is already registered."));
+    }
+    return next(err);
+  }
 };
+
 const login = (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -144,8 +112,6 @@ const updateProfile = (req, res, next) => {
 };
 
 module.exports = {
-  getUsers,
-  getUser,
   createUser,
   login,
   getCurrentUser,

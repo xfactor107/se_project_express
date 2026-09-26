@@ -1,6 +1,14 @@
+const NODE_ENV = process.env.NODE_ENV || "development";
+
+if (!process.env.JWT_SECRET) {
+  if (NODE_ENV === "production") {
+    throw new Error("JWT_SECRET environment variable is required in production");
+  }
+  // eslint-disable-next-line no-console
+  console.warn("JWT_SECRET is not set; using an insecure development secret");
+}
+
 module.exports = {
-  JWT_SECRET:
-    process.env.JWT_SECRET ||
-    "616818acb01ea5a076fecbe8e8b238f453d37193eda5def96a31f1c9bae7f21a",
-  NODE_ENV: process.env.NODE_ENV || "development",
+  JWT_SECRET: process.env.JWT_SECRET || "dev-secret",
+  NODE_ENV,
 };
