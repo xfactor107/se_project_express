@@ -1,6 +1,6 @@
 # WTWR: Weather-Based Wardrobe Recommender — Backend
 
-A Node.js/Express REST API that powers the WTWR application with user authentication, wardrobe management, weather-based filtering, and automatic default item population.
+A Node.js/Express REST API that powers the WTWR application with user authentication, wardrobe management, and automatic default item population.
 
 ## Demo
 Watch the full walkthrough here:  
@@ -11,7 +11,6 @@ This backend provides all server-side functionality for WTWR, including:
 
 - User authentication  
 - Clothing item CRUD operations  
-- Weather-based filtering logic  
 - Automatic default wardrobe population on signup  
 - Secure environment variable handling  
 - MongoDB data persistence  
@@ -22,7 +21,6 @@ This backend provides all server-side functionality for WTWR, including:
 - MongoDB database with Mongoose models  
 - JWT authentication  
 - Default clothing item insertion for new users  
-- Weather-based filtering  
 - Robust error handling  
 - CORS restricted to the frontend origins  
 - Rate limiting on sign-in/sign-up and security headers via helmet  
