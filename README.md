@@ -24,7 +24,8 @@ This backend provides all server-side functionality for WTWR, including:
 - Default clothing item insertion for new users  
 - Weather-based filtering  
 - Robust error handling  
-- CORS configuration  
+- CORS restricted to the frontend origins  
+- Rate limiting on sign-in/sign-up and security headers via helmet  
 - Environment variable support via `.env`
 
 ## Tech Stack
@@ -63,6 +64,7 @@ app.js
    PORT=3001
    MONGODB_URI=<your MongoDB connection string>
    JWT_SECRET=<a long random string>
+   ALLOWED_ORIGINS=http://localhost:3000   # optional; comma-separated frontend URLs allowed by CORS
    NODE_ENV=production   # production only; the server refuses to start without JWT_SECRET
    ```
 4. Start the server
